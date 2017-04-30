@@ -4,18 +4,6 @@ import random
 import functools
 import re
 
-#if praw not installed, install it
-try:
-    import praw
-except:
-    import pip
-    pip.main(['install','praw'])
-    import praw
-
-
-#create reddit object global
-r=praw.Reddit("AutoModerator Rule Creator by /u/captainmeta4")
-
 #other globals
 #there should probably be more of these
 VERSION="1.0"
@@ -23,11 +11,6 @@ VERSION="1.0"
 class Application():
 
     def __init__(self):
-
-        r.set_oauth_app_info(client_id='-FGEc7_7GfDUCg',client_secret="", redirect_uri='http://127.0.0.1:65010/authorize_callback')
-
-        self.me=None
-
 
         self.create_main_window()
 
@@ -114,7 +97,7 @@ class Application():
         i1.pack(anchor=W)
         i2.pack(anchor=W)
 
-        self.domain_entry=Text(master=criteria_frame,relief=SUNKEN,height=8,width=20, bg="#eeeeee")
+        self.domain_entry=Text(master=criteria_frame,relief=SUNKEN,height=8,width=20, bg="#ffffff")
         self.domain_entry.grid(row=2,column=2)
 
         
@@ -143,7 +126,7 @@ class Application():
         r17.pack(anchor=W)
         r13.select()
 
-        self.title_entry=Text(master=criteria_frame,relief=SUNKEN,height=8, width=20,bg="#eeeeee")
+        self.title_entry=Text(master=criteria_frame,relief=SUNKEN,height=8, width=20,bg="#ffffff")
         self.title_entry.grid(row=3,column=2)
 
         #body
@@ -172,7 +155,7 @@ class Application():
         r7.select()
 
 
-        self.body_entry=Text(master=criteria_frame,relief=SUNKEN,height=8, width=20,bg="#eeeeee")
+        self.body_entry=Text(master=criteria_frame,relief=SUNKEN,height=8, width=20,bg="#ffffff")
         self.body_entry.grid(row=4,column=2)
 
         #author criteria
@@ -203,7 +186,7 @@ class Application():
         r23.pack(anchor=W)
         r23.select()
 
-        self.name_entry=Text(master=author_frame,relief=SUNKEN,height=8, width=20,bg="#eeeeee")
+        self.name_entry=Text(master=author_frame,relief=SUNKEN,height=8, width=20,bg="#ffffff")
         self.name_entry.grid(row=1,column=2)
 
         #comment karma check
@@ -324,21 +307,21 @@ class Application():
         comment_label = Checkbutton(master=action_frame, text="Leave Comment:", variable=self.values['comment_bool'])
         comment_label.grid(row=2,column=0)
 
-        self.comment_entry=Text(master=action_frame,relief=SUNKEN,height=8, width=20,bg="#eeeeee")
+        self.comment_entry=Text(master=action_frame,relief=SUNKEN,height=8, width=20,bg="#ffffff")
         self.comment_entry.grid(row=2,column=2)
 
         #send modmail
         modmail_label = Checkbutton(master=action_frame, text="Send Modmail:", variable=self.values['modmail_bool'])
         modmail_label.grid(row=3,column=0)
 
-        self.modmail_entry=Text(master=action_frame,relief=SUNKEN,height=8, width=20,bg="#eeeeee")
+        self.modmail_entry=Text(master=action_frame,relief=SUNKEN,height=8, width=20,bg="#ffffff")
         self.modmail_entry.grid(row=3,column=2)
 
         #send private message
         message_label = Checkbutton(master=action_frame, text="Send Message:", variable=self.values['message_bool'])
         message_label.grid(row=4,column=0)
 
-        self.message_entry=Text(master=action_frame,relief=SUNKEN,height=8, width=20,bg="#eeeeee")
+        self.message_entry=Text(master=action_frame,relief=SUNKEN,height=8, width=20,bg="#ffffff")
         self.message_entry.grid(row=4,column=2)
 
         #Options
@@ -354,21 +337,6 @@ class Application():
 
         create_rule=Button(master=options_frame, text="Create Rule", command=self.output_text)
         create_rule.grid(row=0,column=2)
-        
-
-        #connect to reddit
-        reddit_button=Button(master=options_frame,text="Connect to Reddit", command=self.connect_to_reddit)
-        reddit_button.grid(row=0,column=3)
-
-        #box for &code=
-        self.code=StringVar()
-        self.code.set("click Allow then paste URL here")
-        code_entry=Entry(master=options_frame, textvariable=self.code)
-        code_entry.grid(row=0,column=4)
-
-        #authorize box
-        auth_button=Button(master=options_frame,text="Authorize", command=self.attempt_auth)
-        auth_button.grid(row=0,column=5)
 
         #extras section
         extra_frame=LabelFrame(master=self.top, text="Extras")
@@ -387,43 +355,13 @@ class Application():
 
     def feedback(self):
 
-        url="https://www.reddit.com/message/compose/?to=captainmeta4&subject=Feedback%20on%20AutoMod%20Rule%20Generator"
+        url="https://www.reddit.com/message/compose/?to=captainmeta4&subject=Feedback%20on%20AutoMod%20Rule%20Generator%20v"+str(VERSION)
         webbrowser.open(url)
 
     def about(self):
 
         self.message_box("Version "+str(VERSION)+"\n\ncreated by /u/captainmeta4")
-        
-    def connect_to_reddit(self):
 
-        scopes = 'identity privatemessages'
-
-        state="client_"+str(random.randint(100000,999999))
-
-        url=r.get_authorize_url(state,scope=scopes)
-
-        webbrowser.open(url)
-                            
-    def attempt_auth(self):
-
-        #info=r.get_access_information(self.auth_code.get())
-        url=self.code.get()
-
-        try:
-            code=re.search("&code=(.+)$",url).groups()[0]
-        except:
-            self.message_box("Invalid URL. Please try again")
-            return
-        
-        try:
-            info=r.get_access_information(code)
-        except:
-            self.message_box("Could not authorize. Please click the Connect button and try again")
-            return
-
-        self.me=r.get_me()
-        self.message_box("Successfully authorized as /u/"+self.me.name)
-        
     def message_box(self, text):
         #makes a message box with text
         box=Tk()
@@ -470,24 +408,7 @@ class Application():
 
         done_button=Button(master=output_window, text="Done",command=output_window.destroy)
         done_button.pack()
-        
-    def save(self):
-
-        if self.me==None:
-            self.message_box("You have not authenticated this session with reddit. Click the connect button to start.")
-
-        msg=self.yamlfy_text(self.generate_rule_text())
-        msg+="\n\n*This message was created by the AutoModerator Rule Generator by /u/captainmeta4*"
-
-        try:
-            r.send_message(self.me, "AutoMod Rule: "+self.values['rule_name'].get(),msg)
-        except:
-            self.message_box("Something went wrong. Your authentication may have expired. Please re-authenticate.")
-            return
-
-        self.message_box("AutoMod rule text saved to your reddit inbox.")           
-
-        
+         
 
     def generate_rule_text(self):
 
