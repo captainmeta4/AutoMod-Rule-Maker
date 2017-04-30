@@ -1,0 +1,1 @@
+start cmd /k python AutoMod_Rule_Maker.py
