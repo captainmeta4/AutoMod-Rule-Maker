@@ -6,7 +6,7 @@ import re
 
 #other globals
 #there should probably be more of these
-VERSION="1.0"
+VERSION="1.1"
 
 class Application():
 
@@ -346,12 +346,20 @@ class Application():
         about_button=Button(master=extra_frame, text="About", command=self.about)
         about_button.grid(row=0,column=0)
 
+        #help button
+        help_button=Button(master=extra_frame, text="Help", command = self.help)
+        help_button.grid(row=0,column=1)
+
         #send feedback
         feedback_button=Button(master=extra_frame, text="Send Feedback", command=self.feedback)
-        feedback_button.grid(row=0,column=1)
+        feedback_button.grid(row=0,column=2)
 
         #it took me way to long to realize I needed this line
         self.top.mainloop()
+
+    def help(self):
+        url='https://www.reddit.com/r/captainmeta4/wiki/rule_maker_help'
+        webbrowser.open(url)
 
     def feedback(self):
 
@@ -402,9 +410,6 @@ class Application():
         output_message.insert(END,self.generate_rule_text())
         output_message.config(state=DISABLED)
         output_message.pack()
-
-        reddit_button=Button(master=output_window, text="Save to reddit", command=self.save)
-        reddit_button.pack()
 
         done_button=Button(master=output_window, text="Done",command=output_window.destroy)
         done_button.pack()
