@@ -3,10 +3,18 @@ import webbrowser
 import random
 import functools
 import re
+import sys
+
+#make sure we are running on python 3.x
+if int(sys.version.split()[0][0])<3:
+    print("You are running this in Python {}. Please upgrade to Python 3.5 or newer.".format(sys.version.split()[0]))
+    input("Press Enter to quit.")
+    quit()
+    
 
 #other globals
 #there should probably be more of these
-VERSION="1.1"
+VERSION="1.2"
 
 class Application():
 
